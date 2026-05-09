@@ -32,7 +32,8 @@ const CHROMATIC_C4_TO_C6: Note[] = [
 
 export default function StaffPreview() {
   return (
-    <main className="bg-background text-foreground min-h-svh px-6 py-10">
+    // NOTE: Layout already provides <main>; we render plain content here.
+    <div className="w-full">
       <div className="mx-auto max-w-6xl">
         <h1 className="mb-2 text-3xl font-bold">Podgląd pięciolinii</h1>
         <p className="text-muted-foreground mb-10">
@@ -73,6 +74,6 @@ export default function StaffPreview() {
           </div>
         </section>
       </div>
-    </main>
+    </div>
   );
 }

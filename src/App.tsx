@@ -1,9 +1,26 @@
+import { Route, Routes } from 'react-router-dom';
+
+import { Layout } from './components/Layout';
+import Final from './routes/Final';
+import Listening from './routes/Listening';
+import NoteView from './routes/NoteView';
+import NotFound from './routes/NotFound';
+import SolveStart from './routes/SolveStart';
+import SongName from './routes/SongName';
 import StaffPreview from './routes/StaffPreview';
 
-// NOTE: temporary — App.tsx currently renders StaffPreview as the only view so we
-// can visually verify the <Staff /> component without a router. Real routing
-// (and the actual game flow) lands in the next iteration; this whole file will
-// be replaced then.
 export default function App() {
-  return <StaffPreview />;
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<NoteView />} />
+        <Route path="/solve" element={<SolveStart />} />
+        <Route path="/listening" element={<Listening />} />
+        <Route path="/song-name" element={<SongName />} />
+        <Route path="/final" element={<Final />} />
+        <Route path="/preview" element={<StaffPreview />} />
+        <Route path="*" element={<NotFound />} />
+      </Route>
+    </Routes>
+  );
 }
