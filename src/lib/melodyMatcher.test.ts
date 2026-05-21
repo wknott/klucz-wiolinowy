@@ -7,7 +7,7 @@ import {
   type MatcherState,
   type MatcherTransition,
 } from './melodyMatcher';
-import type { Note } from './pitch.types';
+import type { Note, PitchClass } from './pitch.types';
 
 const STABILITY = 150;
 
@@ -29,7 +29,7 @@ const silence = (now: number): MatcherEvent => ({
  */
 function run(
   events: MatcherEvent[],
-  melody: Note[],
+  melody: PitchClass[],
   stabilityMs = STABILITY,
   start: MatcherState = initialMatcherState,
 ): MatcherTransition {
@@ -54,7 +54,7 @@ describe('reduceMatcher — reset', () => {
       stableSince: 1234,
       completed: true,
     };
-    const t = reduceMatcher(dirty, { type: 'reset' }, ['C5'], STABILITY);
+    const t = reduceMatcher(dirty, { type: 'reset' }, ['C'], STABILITY);
     expect(t.nextState).toEqual(initialMatcherState);
     expect(t.noteAdvanced).toBe(false);
     expect(t.justCompleted).toBe(false);
@@ -63,13 +63,13 @@ describe('reduceMatcher — reset', () => {
 
 describe('reduceMatcher — silence', () => {
   it('does nothing on null detection at idle', () => {
-    const t = reduceMatcher(initialMatcherState, silence(100), ['C5'], STABILITY);
+    const t = reduceMatcher(initialMatcherState, silence(100), ['C'], STABILITY);
     expect(t.nextState).toEqual(initialMatcherState);
     expect(t.noteAdvanced).toBe(false);
   });
 
   it('clears currentDetectedClass and stableSince on silence', () => {
-    const t = run([det('C5', 0), silence(50)], ['C5']);
+    const t = run([det('C5', 0), silence(50)], ['C']);
     expect(t.nextState.currentDetectedClass).toBeNull();
     expect(t.nextState.stableSince).toBeNull();
     expect(t.nextState.progress).toBe(0);
@@ -78,13 +78,13 @@ describe('reduceMatcher — silence', () => {
 
 describe('reduceMatcher — first note', () => {
   it('advances progress when correct note is held past stabilityMs', () => {
-    const t = run([det('C5', 0), det('C5', STABILITY + 1)], ['C5']);
+    const t = run([det('C5', 0), det('C5', STABILITY + 1)], ['C']);
     expect(t.nextState.progress).toBe(1);
     expect(t.noteAdvanced).toBe(true);
   });
 
   it('does NOT advance when correct note is detected but unstable', () => {
-    const t = run([det('C5', 0), det('C5', STABILITY - 1)], ['C5']);
+    const t = run([det('C5', 0), det('C5', STABILITY - 1)], ['C']);
     expect(t.nextState.progress).toBe(0);
     expect(t.nextState.currentDetectedClass).toBe('C');
     expect(t.nextState.stableSince).toBe(0);
@@ -92,14 +92,14 @@ describe('reduceMatcher — first note', () => {
   });
 
   it('updates currentDetectedClass on a wrong note (no progress)', () => {
-    const t = run([det('D5', 0)], ['C5']);
+    const t = run([det('D5', 0)], ['C']);
     expect(t.nextState.progress).toBe(0);
     expect(t.nextState.currentDetectedClass).toBe('D');
     expect(t.noteAdvanced).toBe(false);
   });
 
   it('does not advance on a stable wrong note', () => {
-    const t = run([det('D5', 0), det('D5', STABILITY + 1)], ['C5']);
+    const t = run([det('D5', 0), det('D5', STABILITY + 1)], ['C']);
     expect(t.nextState.progress).toBe(0);
     expect(t.noteAdvanced).toBe(false);
   });
@@ -108,7 +108,7 @@ describe('reduceMatcher — first note', () => {
 describe('reduceMatcher — held note vs repeated note', () => {
   it('does not count a held note twice (melody C-C, no silence between)', () => {
     const events = [det('C5', 0), det('C5', 200), det('C5', 400), det('C5', 600)];
-    const t = run(events, ['C5', 'C5']);
+    const t = run(events, ['C', 'C']);
     expect(t.nextState.progress).toBe(1);
     expect(t.nextState.completed).toBe(false);
   });
@@ -121,7 +121,7 @@ describe('reduceMatcher — held note vs repeated note', () => {
       det('C5', 300),
       det('C5', 500), // second C counted at progress=2
     ];
-    const t = run(events, ['C5', 'C5']);
+    const t = run(events, ['C', 'C']);
     expect(t.nextState.progress).toBe(2);
     expect(t.nextState.completed).toBe(true);
     expect(t.justCompleted).toBe(true);
@@ -136,19 +136,19 @@ describe('reduceMatcher — held note vs repeated note', () => {
       det('C5', 350),
       det('C5', 550), // C counted again
     ];
-    const t = run(events, ['C5', 'C5']);
+    const t = run(events, ['C', 'C']);
     expect(t.nextState.progress).toBe(2);
   });
 });
 
 describe('reduceMatcher — octave equivalence', () => {
-  it('matches the expected note by pitch class only (C4 satisfies C5)', () => {
-    const t = run([det('C4', 0), det('C4', 200)], ['C5']);
+  it('matches by pitch class regardless of octave (C4 satisfies C)', () => {
+    const t = run([det('C4', 0), det('C4', 200)], ['C']);
     expect(t.nextState.progress).toBe(1);
   });
 
-  it('matches across multiple octaves (F#3 satisfies F#5)', () => {
-    const t = run([det('F#3', 0), det('F#3', 200)], ['F#5']);
+  it('matches across multiple octaves (F#3 satisfies F#)', () => {
+    const t = run([det('F#3', 0), det('F#3', 200)], ['F#']);
     expect(t.nextState.progress).toBe(1);
   });
 });
@@ -165,7 +165,7 @@ describe('reduceMatcher — completion', () => {
       det('E5', 600),
       det('E5', 800), // 3 → completed
     ];
-    const t = run(events, ['C5', 'D5', 'E5']);
+    const t = run(events, ['C', 'D', 'E']);
     expect(t.nextState.progress).toBe(3);
     expect(t.nextState.completed).toBe(true);
     expect(t.justCompleted).toBe(true);
@@ -179,7 +179,7 @@ describe('reduceMatcher — completion', () => {
       stableSince: null,
       completed: true,
     };
-    const t = reduceMatcher(completedState, det('D5', 1000), ['C5'], STABILITY);
+    const t = reduceMatcher(completedState, det('D5', 1000), ['C'], STABILITY);
     expect(t.nextState).toEqual(completedState);
     expect(t.noteAdvanced).toBe(false);
     expect(t.justCompleted).toBe(false);
@@ -192,7 +192,7 @@ describe('reduceMatcher — completion', () => {
       silence(300),
       det('D5', 400), // no-op (post-completed)
     ];
-    const t = run(events, ['C5']);
+    const t = run(events, ['C']);
     expect(t.nextState.completed).toBe(true);
     expect(t.justCompleted).toBe(false);
   });

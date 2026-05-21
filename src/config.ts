@@ -1,24 +1,25 @@
-import type { Note } from './lib/pitch.types';
+import type { Note, PitchClass } from './lib/pitch.types';
 
 export type NoteCard = {
   id: number;
   word: string;
-  note: Note;
+  note: PitchClass;
+  displayNote: Note;
 };
 
 export const NOTE_CARDS: NoteCard[] = [
-  { id: 1, word: 'miłość', note: 'G5' },
-  { id: 2, word: 'radość', note: 'E5' },
-  { id: 3, word: 'pokój', note: 'F#5' },
-  { id: 4, word: 'cierpliwość', note: 'G#5' },
-  { id: 5, word: 'uprzejmość', note: 'A5' },
-  { id: 6, word: 'dobroć', note: 'B5' },
-  { id: 7, word: 'wierność', note: 'A5' },
-  { id: 8, word: 'łagodność', note: 'G#5' },
-  { id: 9, word: 'opanowanie', note: 'A5' },
+  { id: 1, word: 'miłość', note: 'B', displayNote: 'B4' },
+  { id: 2, word: 'radość', note: 'E', displayNote: 'E4' },
+  { id: 3, word: 'pokój', note: 'F#', displayNote: 'F#4' },
+  { id: 4, word: 'cierpliwość', note: 'G#', displayNote: 'G#4' },
+  { id: 5, word: 'uprzejmość', note: 'A', displayNote: 'A4' },
+  { id: 6, word: 'dobroć', note: 'B', displayNote: 'B4' },
+  { id: 7, word: 'wierność', note: 'A', displayNote: 'A4' },
+  { id: 8, word: 'łagodność', note: 'G#', displayNote: 'G#4' },
+  { id: 9, word: 'opanowanie', note: 'A', displayNote: 'A4' },
 ];
 
-export const MELODY: Note[] = ['G5', 'E5', 'F#5', 'G#5', 'A5', 'B5', 'A5', 'G#5', 'A5'];
+export const MELODY: PitchClass[] = ['B', 'E', 'F#', 'G#', 'A', 'B', 'A', 'G#', 'A'];
 
 export const SONG = {
   title: 'Sekwencja',
@@ -60,8 +61,8 @@ Daj szczęście bez miary`,
 } as const;
 
 export const DETECTION_CONFIG = {
-  minClarity: 0.9,
-  stabilityMs: 150,
-  minFreq: 500,
-  maxFreq: 2500,
+  minClarity: 0.8,
+  stabilityMs: 60,
+  minFreq: 80,
+  maxFreq: 4200,
 } as const;

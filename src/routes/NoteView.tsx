@@ -69,7 +69,7 @@ export default function NoteView() {
       <h2 className="text-5xl leading-tight font-bold md:text-6xl">{card.word}</h2>
       <Card className="w-full">
         <CardContent className="flex justify-center pt-6">
-          <Staff note={card.note} label={card.note} height={240} />
+          <Staff note={card.displayNote} label={card.note} height={240} />
         </CardContent>
       </Card>
       <p className="text-lg">Czy masz już wszystkie nuty? Sprawdź rozwiązanie!</p>

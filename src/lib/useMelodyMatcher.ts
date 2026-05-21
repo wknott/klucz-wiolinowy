@@ -8,7 +8,7 @@ import {
   type MatcherEvent,
   type MatcherState,
 } from './melodyMatcher';
-import type { Note, PitchClass } from './pitch.types';
+import type { PitchClass } from './pitch.types';
 
 export type MatcherStatus = 'idle' | 'requesting' | 'listening' | 'completed' | 'error';
 
@@ -25,8 +25,8 @@ export type UseMelodyMatcherResult = {
 
 // NOTE: melody is captured at hook mount time. Subsequent prop changes are
 // ignored on purpose — the matcher state machine assumes a fixed target.
-export function useMelodyMatcher(melody: Note[]): UseMelodyMatcherResult {
-  const melodyRef = useRef<Note[]>(melody);
+export function useMelodyMatcher(melody: PitchClass[]): UseMelodyMatcherResult {
+  const melodyRef = useRef<PitchClass[]>(melody);
   const stabilityMsRef = useRef<number>(DETECTION_CONFIG.stabilityMs);
 
   const [state, dispatch] = useReducer(

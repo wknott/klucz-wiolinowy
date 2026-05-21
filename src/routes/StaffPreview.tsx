@@ -51,7 +51,7 @@ export default function StaffPreview() {
                 key={card.id}
                 className="border-border bg-card flex flex-col items-center rounded-lg border p-4"
               >
-                <Staff note={card.note} label={card.word} height={180} />
+                <Staff note={card.displayNote} label={card.word} height={180} />
                 <figcaption className="text-muted-foreground mt-2 text-xs">
                   id={card.id} · {card.note}
                 </figcaption>

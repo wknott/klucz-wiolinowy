@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Note } from './pitch.types';
+import type { PitchClass } from './pitch.types';
 import type { NoteCard } from '../config';
 import { normalizeName, validateConfig } from './configValidator';
 
@@ -15,11 +15,11 @@ describe('validateConfig (current project config)', () => {
 
 describe('validateConfig (synthetic fixtures)', () => {
   const cards: NoteCard[] = [
-    { id: 1, word: 'a', note: 'C5' },
-    { id: 2, word: 'b', note: 'E5' },
-    { id: 3, word: 'c', note: 'G5' },
+    { id: 1, word: 'a', note: 'C', displayNote: 'C4' },
+    { id: 2, word: 'b', note: 'E', displayNote: 'E4' },
+    { id: 3, word: 'c', note: 'G', displayNote: 'G4' },
   ];
-  const melody: Note[] = ['C5', 'E5', 'G5'];
+  const melody: PitchClass[] = ['C', 'E', 'G'];
   const names: string[] = ['cicha noc', 'silent night'];
 
   it('passes when every melody pitch class exists in cards', () => {
@@ -27,21 +27,16 @@ describe('validateConfig (synthetic fixtures)', () => {
   });
 
   it('fails when melody references a pitch class not in cards', () => {
-    const badMelody: Note[] = ['C5', 'E5', 'A5'];
+    const badMelody: PitchClass[] = ['C', 'E', 'A'];
     const result = validateConfig(cards, badMelody, names);
     expect(result.ok).toBe(false);
     if (!result.ok) {
-      expect(result.errors.join('\n')).toMatch(/A5.*pitch class "A".*not present/);
+      expect(result.errors.join('\n')).toMatch(/"A".*not present/);
     }
   });
 
-  it('matches melody to cards by pitch class only (ignores octave)', () => {
-    const melodyWithDifferentOctave: Note[] = ['C4', 'E6', 'G3'];
-    expect(validateConfig(cards, melodyWithDifferentOctave, names).ok).toBe(true);
-  });
-
   it('fails when MELODY is shorter than the number of unique pitch classes in cards', () => {
-    const shortMelody: Note[] = ['C5', 'E5'];
+    const shortMelody: PitchClass[] = ['C', 'E'];
     const result = validateConfig(cards, shortMelody, names);
     expect(result.ok).toBe(false);
     if (!result.ok) {
@@ -51,9 +46,9 @@ describe('validateConfig (synthetic fixtures)', () => {
 
   it('fails when NOTE_CARDS has duplicate ids', () => {
     const dupCards: NoteCard[] = [
-      { id: 1, word: 'a', note: 'C5' },
-      { id: 1, word: 'b', note: 'E5' },
-      { id: 3, word: 'c', note: 'G5' },
+      { id: 1, word: 'a', note: 'C', displayNote: 'C4' },
+      { id: 1, word: 'b', note: 'E', displayNote: 'E4' },
+      { id: 3, word: 'c', note: 'G', displayNote: 'G4' },
     ];
     const result = validateConfig(dupCards, melody, names);
     expect(result.ok).toBe(false);

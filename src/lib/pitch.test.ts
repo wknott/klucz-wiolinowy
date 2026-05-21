@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { freqToNote, isInFluteRange, notesEqualByClass, pitchClassOf } from './pitch';
+import { freqToNote, isInDetectionRange, notesEqualByClass, pitchClassOf } from './pitch';
 
 describe('freqToNote', () => {
   it('maps 440 Hz to A4 with 0 cents', () => {
@@ -71,21 +71,21 @@ describe('notesEqualByClass', () => {
   });
 });
 
-describe('isInFluteRange', () => {
-  it('returns true for a frequency inside 500..2500 Hz', () => {
-    expect(isInFluteRange(440)).toBe(false);
-    expect(isInFluteRange(500)).toBe(true);
-    expect(isInFluteRange(1000)).toBe(true);
-    expect(isInFluteRange(2500)).toBe(true);
+describe('isInDetectionRange', () => {
+  it('returns true for frequencies inside 80..4200 Hz', () => {
+    expect(isInDetectionRange(80)).toBe(true);
+    expect(isInDetectionRange(440)).toBe(true);
+    expect(isInDetectionRange(1000)).toBe(true);
+    expect(isInDetectionRange(4200)).toBe(true);
   });
 
-  it('returns false for frequencies below the soprano-flute range', () => {
-    expect(isInFluteRange(100)).toBe(false);
-    expect(isInFluteRange(499)).toBe(false);
+  it('returns false for frequencies below the detection range', () => {
+    expect(isInDetectionRange(30)).toBe(false);
+    expect(isInDetectionRange(79)).toBe(false);
   });
 
-  it('returns false for frequencies above the soprano-flute range', () => {
-    expect(isInFluteRange(2501)).toBe(false);
-    expect(isInFluteRange(3000)).toBe(false);
+  it('returns false for frequencies above the detection range', () => {
+    expect(isInDetectionRange(4201)).toBe(false);
+    expect(isInDetectionRange(5000)).toBe(false);
   });
 });

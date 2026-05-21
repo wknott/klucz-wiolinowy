@@ -17,8 +17,8 @@ const PITCH_CLASSES: readonly PitchClass[] = [
 
 const A4_FREQ_HZ = 440;
 const A4_MIDI = 69;
-const FLUTE_MIN_HZ = 500;
-const FLUTE_MAX_HZ = 2500;
+const DETECTION_MIN_HZ = 80;
+const DETECTION_MAX_HZ = 4200;
 
 const NOTE_REGEX = /^([A-G]#?)(-?\d+)$/;
 
@@ -46,6 +46,6 @@ export function notesEqualByClass(a: Note, b: Note): boolean {
   return pitchClassOf(a) === pitchClassOf(b);
 }
 
-export function isInFluteRange(freq: Hz): boolean {
-  return freq >= FLUTE_MIN_HZ && freq <= FLUTE_MAX_HZ;
+export function isInDetectionRange(freq: Hz): boolean {
+  return freq >= DETECTION_MIN_HZ && freq <= DETECTION_MAX_HZ;
 }

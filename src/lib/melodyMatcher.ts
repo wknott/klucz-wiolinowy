@@ -1,5 +1,5 @@
 import { pitchClassOf } from './pitch';
-import type { DetectionResult, Note, PitchClass } from './pitch.types';
+import type { DetectionResult, PitchClass } from './pitch.types';
 
 export type MatcherState = {
   progress: number;
@@ -34,7 +34,7 @@ const NO_OP = (state: MatcherState): MatcherTransition => ({
 export function reduceMatcher(
   state: MatcherState,
   event: MatcherEvent,
-  melody: Note[],
+  melody: PitchClass[],
   stabilityMs: number,
 ): MatcherTransition {
   if (event.type === 'reset') {
@@ -86,8 +86,7 @@ export function reduceMatcher(
   }
 
   // Stable, same class, not yet counted — does it match the next expected note?
-  const expectedNote = melody[state.progress];
-  const expectedClass = pitchClassOf(expectedNote);
+  const expectedClass = melody[state.progress];
 
   if (detectedClass !== expectedClass) {
     // Stable wrong note — keep listening, don't advance, don't roll back. Mark

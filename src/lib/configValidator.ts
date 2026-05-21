@@ -1,6 +1,5 @@
 import { MELODY, NOTE_CARDS, SONG, type NoteCard } from '../config';
-import { pitchClassOf } from './pitch';
-import type { Note, PitchClass } from './pitch.types';
+import type { PitchClass } from './pitch.types';
 
 export type ConfigValidationResult = { ok: true } | { ok: false; errors: string[] };
 
@@ -10,19 +9,16 @@ export function normalizeName(s: string): string {
 
 export function validateConfig(
   cards: readonly NoteCard[] = NOTE_CARDS,
-  melody: readonly Note[] = MELODY,
+  melody: readonly PitchClass[] = MELODY,
   acceptedNames: readonly string[] = SONG.acceptedNames,
 ): ConfigValidationResult {
   const errors: string[] = [];
 
-  const cardClasses = new Set<PitchClass>(cards.map((c) => pitchClassOf(c.note)));
+  const cardClasses = new Set<PitchClass>(cards.map((c) => c.note));
 
-  for (const note of melody) {
-    const pc = pitchClassOf(note);
+  for (const pc of melody) {
     if (!cardClasses.has(pc)) {
-      errors.push(
-        `MELODY contains "${note}" (pitch class "${pc}") which is not present in any NOTE_CARD.`,
-      );
+      errors.push(`MELODY contains "${pc}" which is not present in any NOTE_CARD.`);
     }
   }
 

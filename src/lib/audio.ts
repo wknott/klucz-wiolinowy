@@ -1,7 +1,7 @@
 import { PitchDetector } from 'pitchy';
 
 import { DETECTION_CONFIG } from '../config';
-import { freqToNote, isInFluteRange } from './pitch';
+import { freqToNote, isInDetectionRange } from './pitch';
 import type { DetectionResult } from './pitch.types';
 
 export type PitchStreamHandle = { stop: () => void };
@@ -49,10 +49,12 @@ export async function createPitchStream(
     return NOOP_HANDLE;
   }
 
-  // NOTE: AudioContext creation can throw on platforms without Web Audio.
   let audioCtx: AudioContext;
   try {
     audioCtx = new AudioContext();
+    if (audioCtx.state === 'suspended') {
+      await audioCtx.resume();
+    }
   } catch (err) {
     stream.getTracks().forEach((t) => t.stop());
     onError?.('not-supported', err);
@@ -75,7 +77,7 @@ export async function createPitchStream(
     analyser.getFloatTimeDomainData(buffer);
     const [pitch, clarity] = detector.findPitch(buffer, audioCtx.sampleRate);
 
-    if (clarity < DETECTION_CONFIG.minClarity || !isInFluteRange(pitch)) {
+    if (clarity < DETECTION_CONFIG.minClarity || !isInDetectionRange(pitch)) {
       onResult(null);
     } else {
       const { note, cents } = freqToNote(pitch);

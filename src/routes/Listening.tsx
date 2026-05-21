@@ -20,8 +20,6 @@ export default function Listening() {
   const matcher = useMelodyMatcher(MELODY);
   const { status, progress, total, currentlyHearing, error, start, stop, reset } = matcher;
 
-  // Auto-start on mount — we're navigated here from /solve after a user click,
-  // so the gesture context is still valid for getUserMedia / AudioContext.
   useEffect(() => {
     start();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -105,7 +103,19 @@ export default function Listening() {
     );
   }
 
-  // listening / idle
+  if (status === 'idle') {
+    return (
+      <div className="flex w-full max-w-md flex-col items-center gap-6 text-center">
+        <h2 className="text-3xl font-bold">Gotowy?</h2>
+        <p className="text-muted-foreground">Kliknij, aby rozpocząć nasłuchiwanie.</p>
+        <Button size="lg" className="w-full text-xl" onClick={start}>
+          Zacznij słuchać
+        </Button>
+      </div>
+    );
+  }
+
+  // listening
   return (
     <div className="flex w-full max-w-md flex-col items-center gap-6 text-center">
       <h2 className="text-3xl font-bold">Słucham...</h2>
