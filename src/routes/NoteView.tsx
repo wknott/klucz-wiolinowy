@@ -5,7 +5,7 @@ import { Staff } from '@/components/Staff';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { MELODY, NOTE_CARDS } from '@/config';
+import { NOTE_CARDS } from '@/config';
 import { useGameState } from '@/lib/useGameState';
 
 export default function NoteView() {
@@ -39,9 +39,6 @@ export default function NoteView() {
             <Link to="/solve">Kontynuuj — sprawdź rozwiązanie</Link>
           </Button>
         )}
-        <p className="text-muted-foreground text-sm">
-          Zebrano nut: {state.visitedNoteIds.length} / {MELODY.length}
-        </p>
       </div>
     );
   }
@@ -76,9 +73,6 @@ export default function NoteView() {
       <Button asChild size="lg" className="w-full text-lg">
         <Link to="/solve">Sprawdź rozwiązanie</Link>
       </Button>
-      <p className="text-muted-foreground text-sm">
-        Zebrano: {state.visitedNoteIds.length} z {MELODY.length}
-      </p>
     </div>
   );
 }
