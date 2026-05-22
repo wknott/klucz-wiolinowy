@@ -17,6 +17,8 @@ export const NOTE_CARDS: NoteCard[] = [
   { id: 7, word: 'wierność', note: 'A', displayNote: 'A4' },
   { id: 8, word: 'łagodność', note: 'G#', displayNote: 'G#4' },
   { id: 9, word: 'opanowanie', note: 'A', displayNote: 'A4' },
+  { id: 10, word: 'nienawiść', note: 'A#', displayNote: 'A#3' },
+  { id: 11, word: 'spór', note: 'C#', displayNote: 'C#4' },
 ];
 
 export const MELODY: PitchClass[] = ['B', 'E', 'F#', 'G#', 'A', 'B', 'A', 'G#', 'A'];

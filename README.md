@@ -67,7 +67,7 @@ Output to TSV: `id\tword\turl`. URL-e są względem `BASE_URL` (domyślnie produ
 BASE_URL=https://example.com/path yarn qr:urls
 ```
 
-Wynik wklej do dowolnego generatora QR (np. https://www.qr-code-generator.com) lub zrzuć do pliku PNG przez `qrencode`:
+Wynik wklej do dowolnego generatora QR (np. https://wwwqr-code-generator.com) lub zrzuć do pliku PNG przez `qrencode`:
 
 ```bash
 yarn qr:urls | tail -n +2 | while IFS=$'\t' read -r id word url; do
